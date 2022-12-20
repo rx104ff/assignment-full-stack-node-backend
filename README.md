@@ -23,3 +23,19 @@
 
 ### Questions? ###
 Please reach out to me with any questions
+
+### Testing ###
+Manually create a MySQL databased named "db_ecapital"
+Use "root" as the user
+Change the password to "assignment"
+If other username/password combinations are used, please change application.properties accordingly
+spring.jpa.hibernate.ddl-auto is set to "create-drop" which will always create a fresh database upon lanuching. Change it to "update" to avoid re-create and drop of the database upon lanuching and closing.
+
+The backend is written with Spring
+Make sure the testing environment supports Maven and Java 17
+Use "./mvnw spring-boot:run" to run the API on port 8080
+
+The frontend is written with React
+Make sure the environment supports npm
+Run "npm install" then run "npm start" to server the frontend on port 3000
+
