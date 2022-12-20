@@ -115,8 +115,8 @@ function EmployeeList() {
   const handleDelete = async (employee) => {
     setModalErrorsState([]);
 
-    const result = await axios.post(
-      `http://localhost:8080/api/employee/delete?id=${employee.id}`
+    const result = await axios.delete(
+      `http://localhost:8080/api/employee?id=${employee.id}`
     ).catch(function (error) {
       if (error.response) {
         console.log(error.data);

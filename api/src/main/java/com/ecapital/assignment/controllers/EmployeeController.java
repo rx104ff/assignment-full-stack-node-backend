@@ -5,6 +5,7 @@ import com.ecapital.assignment.dtos.UpdateEmployeeDto;
 import com.ecapital.assignment.models.Employee;
 import com.ecapital.assignment.repositories.EmployeeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -35,7 +36,7 @@ public class EmployeeController {
         Optional<Employee> employeeOptional = employeeRepository.findById(updateEmployeeDto.id);
 
         if (employeeOptional.isEmpty()) {
-            return ResponseEntity.notFound().build();
+            return new ResponseEntity<>("Employee does not exist", HttpStatus.NOT_FOUND);
         }
 
         Employee employee = employeeOptional.get();
@@ -48,12 +49,12 @@ public class EmployeeController {
         return ResponseEntity.ok().build();
     }
 
-    @PostMapping("/employee/delete")
+    @DeleteMapping("/employee")
     public ResponseEntity<?> delete(@RequestParam Long id) {
         Optional<Employee> employeeOptional = employeeRepository.findById(id);
 
         if (employeeOptional.isEmpty()) {
-            return ResponseEntity.notFound().build();
+            return new ResponseEntity<>("Employee does not exist", HttpStatus.NOT_FOUND);
         }
 
         employeeRepository.delete(employeeOptional.get());
