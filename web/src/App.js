@@ -23,14 +23,22 @@ function EmployeeList() {
   const [addLastnameState, setAddLastnameState] = useState("");
   const [addSalaryState, setAddSalaryState] = useState();
 
+  const [modalErrorsState, setModalErrorsState] = useState([])
+
   const getEmployees = async () => {
     const result = await axios.get(
       `http://localhost:8080/api/employee/all`
-    );
-    if (result.status === 200) {
-      console.log(result.data);
-      setEmployeesState(result.data);
-    }
+    ).catch(function (error) {
+      if (error.response) {
+        console.log(error.data);
+      } else if (error.request) {
+        console.log(error.request);
+      } else {
+        console.log('Error', error.message);
+      }
+    });
+    
+    setEmployeesState(result.data);
   };
 
   useEffect(() => {
@@ -38,6 +46,8 @@ function EmployeeList() {
   }, []);
 
   const handleAdd = async () => {
+    setModalErrorsState([]);
+    
     const result = await axios.post(
       `http://localhost:8080/api/employee`,
       {
@@ -45,16 +55,32 @@ function EmployeeList() {
         lastname: addLastnameState,
         salary: addSalaryState
       }
-    );
+    ).catch(function (error) {
+      if (error.response) {
+
+        // Transform the violations list into a dictionary
+        const errors = Object.fromEntries(
+          error.response.data.violations.map(
+            violation => [violation.fieldName, violation.message]
+          )
+        );
+        setModalErrorsState(errors);
+      } else if (error.request) {
+        console.log(error.request);
+      } else {
+        console.log('Error', error.message);
+      }
+    });
 
     if (result.status === 200) {
       getEmployees();
-    } else {
-      console.log(result.data);
+      handleAddModalCancel();
     }
   }
 
   const handleEdit = async () => {
+    setModalErrorsState([]);
+
     const result = await axios.put(
       `http://localhost:8080/api/employee`,
       {
@@ -63,17 +89,43 @@ function EmployeeList() {
         lastname: editLastnameState,
         salary: editSalaryState
       }
-    );
+    ).catch(function (error) {
+      if (error.response) {
+
+        // Transform the violations list into a dictionary
+        const errors = Object.fromEntries(
+          error.response.data.violations.map(
+            violation => [violation.fieldName, violation.message]
+          )
+        );
+        setModalErrorsState(errors);
+      } else if (error.request) {
+        console.log(error.request);
+      } else {
+        console.log('Error', error.message);
+      }
+    });
 
     if (result.status === 200) {
       getEmployees();
+      handleEditModalCancel();
     }
   }
 
   const handleDelete = async (employee) => {
+    setModalErrorsState([]);
+
     const result = await axios.post(
       `http://localhost:8080/api/employee/delete?id=${employee.id}`
-    );
+    ).catch(function (error) {
+      if (error.response) {
+        console.log(error.data);
+      } else if (error.request) {
+        console.log(error.request);
+      } else {
+        console.log('Error', error.message);
+      }
+    });
 
     if (result.status === 200) {
       getEmployees();
@@ -84,6 +136,7 @@ function EmployeeList() {
     setAddFirstnameState("");
     setAddLastnameState("");
     setAddSalaryState();
+    setModalErrorsState([]);
     setShowAddModalState(false);
   };
 
@@ -91,6 +144,7 @@ function EmployeeList() {
     setShowEditModalState(false);
     setEditFirstnameState("");
     setEditLastnameState("");
+    setModalErrorsState([]);
     setEditSalaryState();
   };
 
@@ -116,29 +170,41 @@ function EmployeeList() {
         <>
           <InputGroup className="mb-3">
             <Form.Control
+              isInvalid={Object.keys(modalErrorsState).includes("firstname")}
               placeholder="First Name"
               aria-label="Firstname"
               onChange={e => setAddFirstnameState(e.target.value)}
               value={addFirstnameState}
             />
+            <Form.Control.Feedback type="invalid">
+              {modalErrorsState.firstname}
+            </Form.Control.Feedback>
           </InputGroup>
 
           <InputGroup className="mb-3">
             <Form.Control
+              isInvalid={Object.keys(modalErrorsState).includes("lastname")}
               placeholder="Last Name"
               aria-label="Lastname"
               onChange={e => setAddLastnameState(e.target.value)}
               value={addLastnameState}
             />
+            <Form.Control.Feedback type="invalid">
+              {modalErrorsState.lastname}
+            </Form.Control.Feedback>
           </InputGroup>
 
           <InputGroup className="mb-3">
             <InputGroup.Text>$</InputGroup.Text>
             <Form.Control 
+              isInvalid={Object.keys(modalErrorsState).includes("salary")}
               aria-label="Salary"
               onChange={e => setAddSalaryState(e.target.value)}
               value={addSalaryState}
             />
+            <Form.Control.Feedback type="invalid">
+              {modalErrorsState.salary}
+            </Form.Control.Feedback>
           </InputGroup>
         </>
         </Modal.Body>
@@ -160,29 +226,41 @@ function EmployeeList() {
         <>
           <InputGroup className="mb-3">
             <Form.Control
+              isInvalid={Object.keys(modalErrorsState).includes("firstname")}
               placeholder="First Name"
               aria-label="Firstname"
               onChange={e => setEditFirstnameState(e.target.value)}
               value={editFirstnameState}
             />
+            <Form.Control.Feedback type="invalid">
+              {modalErrorsState.firstname}
+            </Form.Control.Feedback>
           </InputGroup>
 
           <InputGroup className="mb-3">
             <Form.Control
+              isInvalid={Object.keys(modalErrorsState).includes("lastname")}
               placeholder="Last Name"
               aria-label="Lastname"
               onChange={e => setEditLastnameState(e.target.value)}
               value={editLastnameState}
             />
+            <Form.Control.Feedback type="invalid">
+              {modalErrorsState.lastname}
+            </Form.Control.Feedback>
           </InputGroup>
 
           <InputGroup className="mb-3">
             <InputGroup.Text>$</InputGroup.Text>
-            <Form.Control 
+            <Form.Control
+              isInvalid={Object.keys(modalErrorsState).includes("salary")}
               aria-label="Salary"
               onChange={e => setEditSalaryState(e.target.value)}
               value={editSalaryState}
             />
+            <Form.Control.Feedback type="invalid">
+              {modalErrorsState.salary}
+            </Form.Control.Feedback>
           </InputGroup>
         </>
         </Modal.Body>
