@@ -49,6 +49,8 @@ function EmployeeList() {
 
     if (result.status === 200) {
       getEmployees();
+    } else {
+      console.log(result.data);
     }
   }
 

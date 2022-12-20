@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import jakarta.validation.Valid;
 import java.util.Optional;
 
 @RestController
@@ -19,7 +20,7 @@ public class EmployeeController {
     EmployeeRepository employeeRepository;
 
     @PostMapping("/employee")
-    public ResponseEntity<?> newEmployee(@RequestBody NewEmployeeDto newEmployeeDto) {
+    public ResponseEntity<?> newEmployee(@RequestBody @Valid NewEmployeeDto newEmployeeDto) {
 
         Employee employee = new Employee(newEmployeeDto.firstname, newEmployeeDto.lastname, newEmployeeDto.salary);
 
@@ -29,7 +30,7 @@ public class EmployeeController {
     }
 
     @PutMapping("/employee")
-    public ResponseEntity<?> editEmployee(@RequestBody UpdateEmployeeDto updateEmployeeDto) {
+    public ResponseEntity<?> editEmployee(@RequestBody @Valid UpdateEmployeeDto updateEmployeeDto) {
 
         Optional<Employee> employeeOptional = employeeRepository.findById(updateEmployeeDto.id);
 
