@@ -3,10 +3,7 @@ import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
-import Button from 'react-bootstrap/Button';
-import InputGroup from 'react-bootstrap/InputGroup';
-import Form from 'react-bootstrap/Form';
-import Modal from 'react-bootstrap/Modal';
+import { Alert, Modal, Form, InputGroup, Button } from 'react-bootstrap';
 
 
 function EmployeeList() {
@@ -14,16 +11,19 @@ function EmployeeList() {
   const [showAddModalState, setShowAddModalState] = useState(false);
   const [showEditModalState, setShowEditModalState] = useState(false);
 
-  const [editIdState, setEditIdState] = useState();
+  const [editIdState, setEditIdState] = useState(0);
   const [editFirstnameState, setEditFirstnameState] = useState("");
   const [editLastnameState, setEditLastnameState] = useState("");
   const [editSalaryState, setEditSalaryState] = useState();
 
   const [addFirstnameState, setAddFirstnameState] = useState("");
   const [addLastnameState, setAddLastnameState] = useState("");
-  const [addSalaryState, setAddSalaryState] = useState();
+  const [addSalaryState, setAddSalaryState] = useState(0);
 
-  const [modalErrorsState, setModalErrorsState] = useState([])
+  const [modalErrorsState, setModalErrorsState] = useState([]);
+
+  const [showAlertState, setShowAlertState] = useState(false);
+  const [alertMessageState, setAlertMessageState] = useState("");
 
   const getEmployees = async () => {
     const result = await axios.get(
@@ -44,6 +44,12 @@ function EmployeeList() {
   useEffect(() => {
     getEmployees();
   }, []);
+
+  useEffect(() => {
+    setTimeout(() => {
+      setShowAlertState(false);
+    }, 7500);
+  }, [showAlertState]);
 
   const handleAdd = async () => {
     setModalErrorsState([]);
@@ -75,6 +81,8 @@ function EmployeeList() {
     if (result.status === 200) {
       getEmployees();
       handleAddModalCancel();
+      setAlertMessageState("Employee created");
+      showAlert();
     }
   }
 
@@ -109,6 +117,8 @@ function EmployeeList() {
     if (result.status === 200) {
       getEmployees();
       handleEditModalCancel();
+      setAlertMessageState("Employeed updated");
+      showAlert();
     }
   }
 
@@ -129,13 +139,15 @@ function EmployeeList() {
 
     if (result.status === 200) {
       getEmployees();
+      setAlertMessageState("Successfully deleted");
+      showAlert();
     }
   }
 
   const handleAddModalCancel = () => {
     setAddFirstnameState("");
     setAddLastnameState("");
-    setAddSalaryState();
+    setAddSalaryState(0);
     setModalErrorsState([]);
     setShowAddModalState(false);
   };
@@ -145,7 +157,7 @@ function EmployeeList() {
     setEditFirstnameState("");
     setEditLastnameState("");
     setModalErrorsState([]);
-    setEditSalaryState();
+    setEditSalaryState(0);
   };
 
   const showEditModal = (employee) => {
@@ -158,6 +170,10 @@ function EmployeeList() {
 
   const showAddModal = () => {
     setShowAddModalState(true);
+  }
+
+  const showAlert = () => {
+    setShowAlertState(true);
   }
 
   return (
@@ -196,10 +212,10 @@ function EmployeeList() {
 
           <InputGroup className="mb-3">
             <InputGroup.Text>$</InputGroup.Text>
-            <Form.Control 
+            <Form.Control
               isInvalid={Object.keys(modalErrorsState).includes("salary")}
               aria-label="Salary"
-              onChange={e => setAddSalaryState(e.target.value)}
+              onChange={e => { const result = e.target.value.replace(/\D/g, ''); setAddSalaryState(result); }}
               value={addSalaryState}
             />
             <Form.Control.Feedback type="invalid">
@@ -255,7 +271,7 @@ function EmployeeList() {
             <Form.Control
               isInvalid={Object.keys(modalErrorsState).includes("salary")}
               aria-label="Salary"
-              onChange={e => setEditSalaryState(e.target.value)}
+              onChange={e => { const result = e.target.value.replace(/\D/g, ''); setEditSalaryState(result); }}
               value={editSalaryState}
             />
             <Form.Control.Feedback type="invalid">
@@ -274,6 +290,7 @@ function EmployeeList() {
         </Modal.Footer>
       </Modal>
     <h2>EMPLOYEES</h2>
+    <Alert variant="success" show={showAlertState}>{alertMessageState} </Alert>
     <br />
     <table className="table table-borderless table-condensed">
       <thead className="border-bottom">
