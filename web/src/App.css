@@ -1,5 +1,5 @@
 .App {
-  text-align: center;
+  text-align: left;
 }
 
 .App-logo {
@@ -26,6 +26,15 @@
 
 .App-link {
   color: #61dafb;
+}
+
+.EmployeeList {
+  margin: 50px;
+  padding: 25px;
+}
+
+tr {
+  font-size: x-large;
 }
 
 @keyframes App-logo-spin {
