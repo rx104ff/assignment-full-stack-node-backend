@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.Optional;
 
 @RestController
+@CrossOrigin
 @RequestMapping("/api")
 public class EmployeeController {
 
@@ -62,7 +63,11 @@ public class EmployeeController {
 
     @GetMapping("/employee/all")
     public ResponseEntity<?> getAllEmployees() {
-        ArrayList<Employee> employees = employeeRepository.findAll();
+        var employees = employeeRepository.findAll();
+
+        for (Employee employee: employees) {
+            System.out.println(employee.getFirstname());
+        }
 
         return ResponseEntity.ok(employees);
     }

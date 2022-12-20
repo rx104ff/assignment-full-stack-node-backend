@@ -18,6 +18,8 @@ public class Employee {
     @Column(name = "salary")
     private Integer salary;
 
+    public Employee() {}
+
     public Employee(String username, String password, Integer salary) {
         this.firstname = username;
         this.lastname = password;
