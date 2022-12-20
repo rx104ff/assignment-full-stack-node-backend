@@ -26,6 +26,10 @@ public class Employee {
         this.salary = salary;
     }
 
+    public Long getId() {
+        return this.id;
+    }
+
     public void setFirstname(String firstname) {
         this.firstname = firstname;
     }

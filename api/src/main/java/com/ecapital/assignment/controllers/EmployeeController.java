@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.Optional;
 
 @RestController
@@ -64,10 +63,6 @@ public class EmployeeController {
     @GetMapping("/employee/all")
     public ResponseEntity<?> getAllEmployees() {
         var employees = employeeRepository.findAll();
-
-        for (Employee employee: employees) {
-            System.out.println(employee.getFirstname());
-        }
 
         return ResponseEntity.ok(employees);
     }
